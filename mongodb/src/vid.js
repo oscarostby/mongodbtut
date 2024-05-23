@@ -1,29 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Vid from './veed.mp4'; // Correct the path to the video file
 
-const Container = styled.div`
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roblox, Oxygen, Ubuntu, Cantarell,
-    'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #f5f5f5;
-  padding-bottom: 4rem;
-`;
-
 const Navbar = styled.nav`
   background-color: #fff;
-  border-bottom: none;
-  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #ddd;
+  padding: 1rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: ${props => props.isSticky ? 'fixed' : 'relative'};
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  transition: top 0.3s ease;
+`;
+
+const NavMenu = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
 `;
 
 const Logo = styled.h1`
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
-  color: #47a248; /* MongoDB Green */
+  color: #0070c9;
+`;
+
+const NavItem = styled.li`
+  margin-left: 1.5rem;
+`;
+
+const NavLink = styled.a`
+  color: #333;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  &:hover {
+    color: #0070c9;
+  }
+`;
+
+const Container = styled.div`
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f5f5f5;
+  padding-bottom: 4rem;
 `;
 
 const Footer = styled.footer`
@@ -32,6 +59,13 @@ const Footer = styled.footer`
   padding: 1.5rem 2rem;
   text-align: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const VideoContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
 `;
 
 const CommandsContainer = styled.div`
@@ -52,7 +86,7 @@ const CommandItem = styled.div`
 const CommandTitle = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #0070c9; /* MongoDB Blue */
+  color: #0070c9;
 `;
 
 const CommandText = styled.p`
@@ -65,7 +99,7 @@ const CopyButton = styled.button`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background-color: #47a248; /* MongoDB Green */
+  background-color: #47a248;
   color: #fff;
   border: none;
   border-radius: 0.3rem;
@@ -74,11 +108,30 @@ const CopyButton = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
   &:hover {
-    background-color: #3a942b; /* Darker MongoDB Green */
+    background-color: #3a942b;
   }
 `;
 
 const VideoPage = () => {
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if (offset > 80) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const commands = [
     'sudo apt-get install gnupg curl',
     'curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor',
@@ -105,11 +158,23 @@ const VideoPage = () => {
 
   return (
     <Container>
-      <Navbar>
+      <Navbar isSticky={isSticky}>
         <Logo>MongoDB Veiledning</Logo>
-        {/* Add navigation links if needed */}
+        <NavMenu>
+          <NavItem>
+            <NavLink href="./">Hjem</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="./kurs">Kurs</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="#">Om</NavLink>
+          </NavItem>
+        </NavMenu>
       </Navbar>
-      <video src={Vid} controls />
+      <VideoContainer>
+        <video src={Vid} controls width="800" />
+      </VideoContainer>
       <CommandsContainer>
         {commands.map((command, index) => (
           <CommandItem key={index}>
@@ -120,7 +185,7 @@ const VideoPage = () => {
         ))}
       </CommandsContainer>
       <Footer>
-        <p>&copy; 2023 MongoDB Veiledning. Alle rettigheter reservert.</p>
+        <p>&copy; 2023 MongoDB Veiledning. All rights reserved.</p>
       </Footer>
     </Container>
   );

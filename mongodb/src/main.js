@@ -189,10 +189,10 @@ function App() {
         <Logo>MongoDB Veiledning</Logo>
         <NavMenu>
           <NavItem>
-            <NavLink href="#">Hjem</NavLink>
+            <NavLink href="/">Hjem</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="#">Kurs</NavLink>
+            <NavLink href="/courses">Kurs</NavLink>
           </NavItem>
           <NavItem>
             <NavLink href="#">Om</NavLink>
